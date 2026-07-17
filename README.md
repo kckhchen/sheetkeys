@@ -99,8 +99,8 @@ Here is a partial list:
 
     >>    Move tab right
     <<    Move tab left
-    K      Next tab
-    J      Previous tab
+    L      Next tab
+    H      Previous tab
 
 **Other**
 

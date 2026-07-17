@@ -1,5 +1,18 @@
 ## SheetKeys - The Hacker's Spreadsheet
 
+> **Note:** This is a fork of the original [SheetKeys](https://github.com/philc/sheetkeys). This fork was created to add new features and fix bugs, personally making my experience better.
+
+## What's New in This Fork
+
+Unlike the upstream repository, this version includes:
+* **Keystroke Blocking:** Implemented keystroke blocking more strictly so that cells are only editable when in insert mode, preventing accidental edits. 
+* **Color Support:** The original repo supports commands for changing cell background colors but not text colors (the logic is present, but the command interface was not implemented). This fork enables text colors (with commands like `; t r` for red), makes text colors more readable, and adds the color black (`B`), along with British English support.
+* **Tab Navigation:** This fork defaults spreadsheet tab navigation to `H` and `L`, and makes the extension pass `J` and `K` to Vimium C, so that Vimium C users can navigate across browser tabs without being blocked on the spreadsheet page.
+
+---
+
+## About the Original Project
+
 SheetKeys is a browser extension which adds powerful keyboard shortcuts to Google Sheets, in the
 spirit of the Vim text editor. It's written by one of the authors of
 [Vimium](https://github.com/philc/vimium).

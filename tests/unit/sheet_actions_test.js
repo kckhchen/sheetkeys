@@ -77,3 +77,59 @@ context("openCellAsUrl", () => {
     assert.equal(["https://example.com"], opened);
   });
 });
+
+context("color picker actions", () => {
+  setup(() => {
+    SheetActions.typeKeyFn = function () {};
+  });
+
+  should("find the fill palette button with aria-label prefixes", () => {
+    const html = `
+      <button id="fill-color-btn" aria-label="Fill color (Alt+Shift+5)"></button>
+      <button id="text-color-btn" aria-label="Text color"></button>
+    `;
+    jsdomStub(html);
+    const paletteButton = SheetActions.getColorPaletteButton("cell");
+    assert.equal("fill-color-btn", paletteButton.id);
+  });
+
+  should("find the fill palette button with aria-label sentence suffixes", () => {
+    const html = `
+      <button id="fill-color-btn" aria-label="Fill color. Currently white"></button>
+    `;
+    jsdomStub(html);
+    const paletteButton = SheetActions.getColorPaletteButton("cell");
+    assert.equal("fill-color-btn", paletteButton.id);
+  });
+
+  should("find the fill palette button with tooltip labels", () => {
+    const html = `
+      <button id="fill-color-btn" data-tooltip="Fill color (Alt+Shift+5)"></button>
+    `;
+    jsdomStub(html);
+    const paletteButton = SheetActions.getColorPaletteButton("cell");
+    assert.equal("fill-color-btn", paletteButton.id);
+  });
+
+  should("find the fill palette button with UK spelling", () => {
+    const html = `
+      <button id="fill-colour-btn" aria-label="Fill colour"></button>
+    `;
+    jsdomStub(html);
+    const paletteButton = SheetActions.getColorPaletteButton("cell");
+    assert.equal("fill-colour-btn", paletteButton.id);
+  });
+
+  should("return clickable parent for color swatch and click palette twice", () => {
+    const html = `
+      <button id="fill-color-btn" aria-label="Fill color"></button>
+      <button id="light-yellow-btn"><span aria-label="light yellow 3: selected"></span></button>
+    `;
+    jsdomStub(html);
+    const clicked = [];
+    stub(KeyboardUtils, "simulateClick", (el) => clicked.push(el.id));
+    const colorButton = SheetActions.getColorButton("light yellow 3", "cell");
+    assert.equal("light-yellow-btn", colorButton.id);
+    assert.equal(["fill-color-btn", "fill-color-btn"], clicked);
+  });
+});

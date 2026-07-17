@@ -188,20 +188,65 @@ const SheetActions = {
   // Returns the color palette button corresponding to the given color name. type: either "font" or
   // "cell", depending on which color you want to change.
   // Note that the availability and use of the color palette buttons is a bit finicky.
+  getElementsByLabelPrefix(label) {
+    const selector = "*[aria-label], *[data-tooltip], *[data-tooltip-text], *[title]";
+    return Array.from(document.querySelectorAll(selector)).filter((el) => {
+      const labels = [
+        el.getAttribute("aria-label"),
+        el.getAttribute("data-tooltip"),
+        el.getAttribute("data-tooltip-text"),
+        el.getAttribute("title"),
+      ].filter(Boolean).map((value) => value.trim());
+      return labels.some((value) => {
+        return (
+          value === label ||
+          value.startsWith(`${label} `) ||
+          value.startsWith(`${label}.`) ||
+          value.startsWith(`${label}(`) ||
+          value.startsWith(`${label}:`)
+        );
+      });
+    });
+  },
+
+  getVisibleElements(elements) {
+    return elements.filter((el) => {
+      const style = window.getComputedStyle(el);
+      if (style.display === "none" || style.visibility === "hidden") {
+        return false;
+      }
+      const rect = el.getBoundingClientRect();
+      return rect.width > 0 && rect.height > 0;
+    });
+  },
+
+  getClickableElement(el) {
+    return el.closest("button,[role='button']") || el;
+  },
+
+  getColorPaletteButton(type) {
+    const labels = (type == "cell")
+      ? ["Fill color", "Fill colour"]
+      : ["Text color", "Text colour"];
+    let paletteCandidates = [];
+    for (const label of labels) {
+      paletteCandidates = this.getElementsByLabelPrefix(label);
+      if (paletteCandidates.length > 0) break;
+    }
+    assert(paletteCandidates.length > 0, `Couldn't find a ${type} color/colour palette button.`);
+    const visiblePaletteCandidates = this.getVisibleElements(paletteCandidates);
+    return this.getClickableElement(visiblePaletteCandidates[0] || paletteCandidates[0]);
+  },
+
   getColorButton(color, type) {
     // First we must open the palette; only then can we reliably get the color button that pertains
     // to that color palette.
-    const paletteButton = document.querySelector(
-      (type == "cell") ? "*[aria-label='Fill color']" : "*[aria-label='Text color']",
-    );
+    const paletteButton = this.getColorPaletteButton(type);
     KeyboardUtils.simulateClick(paletteButton);
-
-    const rect = paletteButton.getBoundingClientRect();
-    const palette = document.elementFromPoint(rect.left, rect.bottom + 10);
-    assert(palette, `Unable to find element for ${type} panel.`);
-    const selector = `*[aria-label='${color}']`;
-    const colorButton = palette.querySelector(selector);
-    assert(colorButton, `Couldn't find the color button with selector ${selector}`);
+    const colorCandidates = this.getElementsByLabelPrefix(color);
+    assert(colorCandidates.length > 0, `Couldn't find the color button with aria-label ${color}`);
+    const visibleColorCandidates = this.getVisibleElements(colorCandidates);
+    const colorButton = this.getClickableElement(visibleColorCandidates[0] || colorCandidates[0]);
 
     // Hide the color palette. This isn't strictly necessary because any other click on the document
     // will also result in hiding the palette.

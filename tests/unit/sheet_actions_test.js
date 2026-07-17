@@ -133,3 +133,27 @@ context("color picker actions", () => {
     assert.equal(["fill-color-btn", "fill-color-btn"], clicked);
   });
 });
+
+context("text color commands", () => {
+  should("map text color commands to font color helper", () => {
+    const colors = [];
+    stub(SheetActions, "changeFontColor", (color) => colors.push(color));
+    SheetActions.colorTextWhite();
+    SheetActions.colorTextLightYellow3();
+    SheetActions.colorTextLightCornflowerBlue3();
+    SheetActions.colorTextLightPurple();
+    SheetActions.colorTextLightRed3();
+    SheetActions.colorTextLightGray2();
+    assert.equal(
+      [
+        SheetActions.textColors.white,
+        SheetActions.textColors.yellow,
+        SheetActions.textColors.blue,
+        SheetActions.textColors.purple,
+        SheetActions.textColors.red,
+        SheetActions.textColors.gray,
+      ],
+      colors,
+    );
+  });
+});

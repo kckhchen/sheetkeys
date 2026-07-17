@@ -59,6 +59,15 @@ const SheetActions = {
     lightGray2: "light gray 2",
   },
 
+  textColors: {
+    white: "white",
+    yellow: "yellow",
+    blue: "blue",
+    purple: "purple",
+    red: "red",
+    gray: "gray",
+  },
+
   // A mapping of button-caption to DOM element.
   menuItemElements: {},
 
@@ -762,6 +771,24 @@ const SheetActions = {
   },
   colorCellLightGray2() {
     this.changeCellColor(this.colors.lightGray2);
+  },
+  colorTextWhite() {
+    this.changeFontColor(this.textColors.white);
+  },
+  colorTextLightYellow3() {
+    this.changeFontColor(this.textColors.yellow);
+  },
+  colorTextLightCornflowerBlue3() {
+    this.changeFontColor(this.textColors.blue);
+  },
+  colorTextLightPurple() {
+    this.changeFontColor(this.textColors.purple);
+  },
+  colorTextLightRed3() {
+    this.changeFontColor(this.textColors.red);
+  },
+  colorTextLightGray2() {
+    this.changeFontColor(this.textColors.gray);
   },
 
   freezeRow() {

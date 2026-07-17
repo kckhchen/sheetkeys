@@ -8,7 +8,7 @@ Unlike the upstream repository, this version includes:
 * **Keystroke Blocking:** Implemented keystroke blocking more strictly so that cells are only editable when in insert mode, preventing accidental edits. 
 * **Color Support:** The original repo supports commands for changing cell background colors but not text colors (the logic is present, but the command interface was not implemented). This fork enables text colors (with commands like `; t r` for red), makes text colors more readable, and adds the color black (`B`), along with British English support.
 * **Tab Navigation:** This fork defaults spreadsheet tab navigation to `H` and `L`, and makes the extension pass `J` and `K` to Vimium C, so that Vimium C users can navigate across browser tabs without being blocked on the spreadsheet page.
-
+* **Go To Bottom:** Now the "go to bottom" command `G` no longer takes you to the buttom of the entire sheet, but the bottom of bottom of the current non-empty range, like how "Cmd + Down" does.
 ---
 
 ## About the Original Project

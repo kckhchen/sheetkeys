@@ -600,10 +600,8 @@ const SheetActions = {
 
   scrollToBottom() {
     const modifiers = this.isMac() ? { meta: true } : { control: true };
-    // End takes you to the bottom-right corner of the sheet, which doesn't mirror gg. So use Left
-    // afterwards.
-    this.typeKeyFn(KeyboardUtils.keyCodes.end, modifiers);
-    this.typeKeyFn(KeyboardUtils.keyCodes.left, modifiers);
+    // Jump to the bottom of the current contiguous non-empty range, mirroring Cmd/Ctrl+Down.
+    this.typeKeyFn(KeyboardUtils.keyCodes.down, modifiers);
   },
 
   //

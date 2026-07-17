@@ -169,3 +169,21 @@ context("cell color commands", () => {
     assert.equal([SheetActions.colors.black], colors);
   });
 });
+
+context("scroll commands", () => {
+  should("scrollToBottom uses Cmd+Down on Mac", () => {
+    const typed = [];
+    SheetActions.typeKeyFn = (keyCode, modifiers) => typed.push({ keyCode, modifiers });
+    stub(SheetActions, "isMac", () => true);
+    SheetActions.scrollToBottom();
+    assert.equal([{ keyCode: KeyboardUtils.keyCodes.down, modifiers: { meta: true } }], typed);
+  });
+
+  should("scrollToBottom uses Ctrl+Down on non-Mac", () => {
+    const typed = [];
+    SheetActions.typeKeyFn = (keyCode, modifiers) => typed.push({ keyCode, modifiers });
+    stub(SheetActions, "isMac", () => false);
+    SheetActions.scrollToBottom();
+    assert.equal([{ keyCode: KeyboardUtils.keyCodes.down, modifiers: { control: true } }], typed);
+  });
+});

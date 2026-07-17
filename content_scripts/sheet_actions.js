@@ -51,6 +51,7 @@ const SheetActions = {
   // You can find the names of these color swatches by hovering over the swatches and seeing the
   // tooltip.
   colors: {
+    black: "black",
     white: "white",
     lightYellow3: "light yellow 3",
     lightCornflowBlue3: "light cornflower blue 3",
@@ -60,6 +61,7 @@ const SheetActions = {
   },
 
   textColors: {
+    black: "black",
     white: "white",
     yellow: "yellow",
     blue: "blue",
@@ -754,6 +756,9 @@ const SheetActions = {
   alignRight() {
     this.clickToolbarButton(this.buttons.right);
   },
+  colorCellBlack() {
+    this.changeCellColor(this.colors.black);
+  },
   colorCellWhite() {
     this.changeCellColor(this.colors.white);
   },
@@ -771,6 +776,9 @@ const SheetActions = {
   },
   colorCellLightGray2() {
     this.changeCellColor(this.colors.lightGray2);
+  },
+  colorTextBlack() {
+    this.changeFontColor(this.textColors.black);
   },
   colorTextWhite() {
     this.changeFontColor(this.textColors.white);

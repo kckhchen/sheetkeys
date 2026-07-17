@@ -132,12 +132,14 @@ context("color picker actions", () => {
     assert.equal("light-yellow-btn", colorButton.id);
     assert.equal(["fill-color-btn", "fill-color-btn"], clicked);
   });
+
 });
 
 context("text color commands", () => {
   should("map text color commands to font color helper", () => {
     const colors = [];
     stub(SheetActions, "changeFontColor", (color) => colors.push(color));
+    SheetActions.colorTextBlack();
     SheetActions.colorTextWhite();
     SheetActions.colorTextLightYellow3();
     SheetActions.colorTextLightCornflowerBlue3();
@@ -146,6 +148,7 @@ context("text color commands", () => {
     SheetActions.colorTextLightGray2();
     assert.equal(
       [
+        SheetActions.textColors.black,
         SheetActions.textColors.white,
         SheetActions.textColors.yellow,
         SheetActions.textColors.blue,
@@ -155,5 +158,14 @@ context("text color commands", () => {
       ],
       colors,
     );
+  });
+});
+
+context("cell color commands", () => {
+  should("map black cell color command to cell color helper", () => {
+    const colors = [];
+    stub(SheetActions, "changeCellColor", (color) => colors.push(color));
+    SheetActions.colorCellBlack();
+    assert.equal([SheetActions.colors.black], colors);
   });
 });

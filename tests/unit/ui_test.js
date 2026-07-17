@@ -111,4 +111,35 @@ context("onKeyDown", () => {
     keydown({ key: "z" });
     assert.equal(0, cancelCount);
   });
+
+  should("forward uppercase J/K to Vimium C in normal mode", () => {
+    let cancelCount = 0;
+    const forwardedKeys = [];
+    stub(ui, "cancelEvent", () => {
+      cancelCount++;
+    });
+    stub(ui, "forwardKeyToVimiumC", (keyString) => {
+      forwardedKeys.push(keyString);
+    });
+    SheetActions.setMode("normal");
+    ui.modeToKeyToCommand.normal = {};
+    ui.keyMappingsPrefixes.normal = {};
+    keydown({ key: "k", shiftKey: true });
+    keydown({ key: "j", shiftKey: true });
+    assert.equal(2, cancelCount);
+    assert.equal(["K", "J"], forwardedKeys);
+  });
+
+  should("allow lowercase j/k pass-through in normal mode", () => {
+    let cancelCount = 0;
+    stub(ui, "cancelEvent", () => {
+      cancelCount++;
+    });
+    SheetActions.setMode("normal");
+    ui.modeToKeyToCommand.normal = {};
+    ui.keyMappingsPrefixes.normal = {};
+    keydown({ key: "j" });
+    keydown({ key: "k" });
+    assert.equal(0, cancelCount);
+  });
 });

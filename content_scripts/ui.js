@@ -21,6 +21,7 @@ const addOneTimeListener = function (dispatcher, eventType, listenerFn) {
 // bound.
 const MAX_KEY_MAPPING_LENGTH = 6;
 const RICH_TEXT_EDITOR_ID = "waffle-rich-text-editor";
+const VIMIUM_C_EXTENSION_ID = "hfjbmagddngcpeloejdejnfgbamkjaeg";
 
 class UI {
   // Keys which were typed recently
@@ -165,8 +166,26 @@ class UI {
   shouldBlockCellEditingKeystroke(e, keyString) {
     if (SheetActions.mode === "insert") return false;
     if (e.metaKey || e.ctrlKey || e.altKey) return false;
+    if (["j", "k", "J", "K"].includes(keyString)) return false;
     if (keyString.length === 1) return true;
     return ["space", "backspace", "delete", "enter"].includes(keyString);
+  }
+
+  shouldForwardKeyToVimiumC(keyString) {
+    return SheetActions.mode !== "insert" && ["J", "K"].includes(keyString);
+  }
+
+  forwardKeyToVimiumC(keyString) {
+    const command = (keyString === "J") ? "previousTab" : "nextTab";
+    chrome.runtime.sendMessage(
+      VIMIUM_C_EXTENSION_ID,
+      { handler: "command", command },
+      () => {
+        if (chrome.runtime.lastError) {
+          console.warn("Could not forward key to Vimium C:", chrome.runtime.lastError.message);
+        }
+      },
+    );
   }
 
   onKeydown(e) {
@@ -176,6 +195,12 @@ class UI {
 
     // Ignore key presses which are just modifiers.
     if (!keyString) return;
+
+    if (this.shouldForwardKeyToVimiumC(keyString)) {
+      this.cancelEvent(e);
+      this.forwardKeyToVimiumC(keyString);
+      return;
+    }
 
     // In replace mode, we're waiting for one character to be typed, and we will replace the cell's
     // contents with that character and then return to normal mode.

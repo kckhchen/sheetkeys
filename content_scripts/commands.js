@@ -495,8 +495,8 @@ const Commands = {
       "moveTabLeft": "<•<",
       // "nextTab": "g•t",
       // "prevTab": "g•T",
-      "prevTab": "J",
-      "nextTab": "K",
+      "prevTab": "H",
+      "nextTab": "L",
 
       // Formatting
       "wrap": ";•w•w",

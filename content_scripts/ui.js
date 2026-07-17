@@ -161,6 +161,14 @@ class UI {
     e.stopPropagation();
   }
 
+  // In non-insert modes, block keys that can start or alter cell editing.
+  shouldBlockCellEditingKeystroke(e, keyString) {
+    if (SheetActions.mode === "insert") return false;
+    if (e.metaKey || e.ctrlKey || e.altKey) return false;
+    if (keyString.length === 1) return true;
+    return ["space", "backspace", "delete", "enter"].includes(keyString);
+  }
+
   onKeydown(e) {
     const keyString = KeyboardUtils.getKeyString(e);
     // console.log("keydown event. keyString:", keyString, e.keyCode, e.keyIdentifier, e);
@@ -238,6 +246,10 @@ class UI {
         }
         this.repeatCount = null;
       }
+    }
+
+    if (this.shouldBlockCellEditingKeystroke(e, keyString)) {
+      this.cancelEvent(e);
     }
   }
 

@@ -92,4 +92,23 @@ context("onKeyDown", () => {
     keydown({ key: "k" });
     assert.equal(99, commandsInvoked.length);
   });
+
+  should("block unbound printable keys from editing when not in insert mode", () => {
+    let cancelCount = 0;
+    stub(ui, "cancelEvent", () => {
+      cancelCount++;
+    });
+    keydown({ key: "z" });
+    assert.equal(1, cancelCount);
+  });
+
+  should("allow unbound printable keys in insert mode", () => {
+    let cancelCount = 0;
+    stub(ui, "cancelEvent", () => {
+      cancelCount++;
+    });
+    SheetActions.setMode("insert");
+    keydown({ key: "z" });
+    assert.equal(0, cancelCount);
+  });
 });

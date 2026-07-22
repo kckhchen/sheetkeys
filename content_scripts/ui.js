@@ -175,15 +175,25 @@ class UI {
     return SheetActions.mode !== "insert" && ["J", "K"].includes(keyString);
   }
 
-  forwardKeyToVimiumC(keyString) {
+  forwardKeyToVimiumC(keyString, retriesLeft = 1) {
     const command = (keyString === "J") ? "previousTab" : "nextTab";
     chrome.runtime.sendMessage(
       VIMIUM_C_EXTENSION_ID,
       { handler: "command", command },
       () => {
-        if (chrome.runtime.lastError) {
-          console.warn("Could not forward key to Vimium C:", chrome.runtime.lastError.message);
+        const error = chrome.runtime.lastError;
+        if (!error) return;
+        // Vimium C is a Manifest V3 extension, so its background service worker is suspended after
+        // it's idle. The first message sent to a suspended worker can fail while Chrome is still
+        // waking it up ("Could not establish connection. Receiving end does not exist."); that same
+        // send wakes it, so a retry shortly after almost always succeeds. Only retry on that error:
+        // it means the message wasn't delivered, so re-sending won't switch tabs twice.
+        const notDelivered = (error.message || "").includes("Receiving end does not exist");
+        if (notDelivered && retriesLeft > 0) {
+          setTimeout(() => this.forwardKeyToVimiumC(keyString, retriesLeft - 1), 50);
+          return;
         }
+        console.warn("Could not forward key to Vimium C:", error.message);
       },
     );
   }

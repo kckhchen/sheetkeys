@@ -9,6 +9,7 @@ Unlike the upstream repository, this version includes:
 * **Color Support:** The original repo supports commands for changing cell background colors but not text colors (the logic is present, but the command interface was not implemented). This fork enables text colors (with commands like `; t r` for red), makes text colors more readable, and adds the color black (`B`), along with British English support.
 * **Tab Navigation:** This fork defaults spreadsheet tab navigation to `H` and `L`, and makes the extension pass `J` and `K` to Vimium C, so that Vimium C users can navigate across browser tabs without being blocked on the spreadsheet page.
 * **Go To Bottom:** Now the "go to bottom" command `G` no longer takes you to the buttom of the entire sheet, but the bottom of the current non-empty range, like how "Cmd + Down" does.
+* **Stricter Copy:** Modified the regex to make the copy cell command `yc` more robust, avoiding copying the link instead of the cell accidentally.
 ---
 
 ## About the Original Project

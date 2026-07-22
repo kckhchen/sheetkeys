@@ -183,17 +183,24 @@ class UI {
       () => {
         const error = chrome.runtime.lastError;
         if (!error) return;
+        const message = error.message || "";
         // Vimium C is a Manifest V3 extension, so its background service worker is suspended after
         // it's idle. The first message sent to a suspended worker can fail while Chrome is still
         // waking it up ("Could not establish connection. Receiving end does not exist."); that same
         // send wakes it, so a retry shortly after almost always succeeds. Only retry on that error:
         // it means the message wasn't delivered, so re-sending won't switch tabs twice.
-        const notDelivered = (error.message || "").includes("Receiving end does not exist");
-        if (notDelivered && retriesLeft > 0) {
-          setTimeout(() => this.forwardKeyToVimiumC(keyString, retriesLeft - 1), 50);
-          return;
+        if (message.includes("Receiving end does not exist")) {
+          if (retriesLeft > 0) {
+            setTimeout(() => this.forwardKeyToVimiumC(keyString, retriesLeft - 1), 50);
+            return;
+          }
+          // Retry exhausted: Vimium C is likely uninstalled or disabled.
         }
-        console.warn("Could not forward key to Vimium C:", error.message);
+        // Vimium C handles the command but doesn't send a response, so the port closes with this
+        // error even though the tab switch succeeded. It's benign; don't warn or retry (a retry
+        // would switch tabs twice).
+        if (message.includes("message port closed")) return;
+        console.warn("Could not forward key to Vimium C:", message);
       },
     );
   }

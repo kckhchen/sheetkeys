@@ -2,7 +2,10 @@ const SheetActions = {
   // NOTE(philc): When developing, you can use this snippet to preview all available menu items:
   // Array.from(document.querySelectorAll(".goog-menuitem")).forEach((i) => console.log(i.innerText))
   menuItems: {
-    copy: { parent: "Edit", caption: "Copy" },
+    // Match the real "Copy" menu item (its label is immediately followed by its keyboard shortcut,
+    // e.g. "Copy⌘C"), but not the link-hovercard items "Copy link"/"Copy link to this time" or
+    // "Copy as Markdown", all of which have a space after "Copy" and would otherwise match first.
+    copy: { parent: "Edit", caption: /^Copy(?!\s)/ },
     delete: { parent: "Edit", caption: "Delete►" },
     // Avoid matching the menu item "Column stats".
     deleteColumn: { parent: "Edit", caption: /^Column[s]? (?!stats)/ },
